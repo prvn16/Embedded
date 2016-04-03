@@ -1,0 +1,12 @@
+The file my-directory-list.txt contains:
+
+The file test.c contains:
+// This is my C++ file.
+
+/*[[[cog
+import cog
+fnames = ['DoSomething', 'DoAnotherThing', 'DoLastThing']
+for fn in fnames:
+    cog.outl("void %s();" % fn)
+]]]*/
+//[[[end]]]

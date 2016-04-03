@@ -1,0 +1,55 @@
+The file compile.sh contains:
+#!/bin/bash
+
+arm-none-eabi-gcc -c -mcpu=cortex-a8 hw-entry.c -o hw-entry.o
+
+arm-none-eabi-as -mcpu=cortex-a8 hw-startup.s -o hw-startup.o
+
+arm-none-eabi-ld -T hw-boot.ld hw-entry.o hw-startup.o -o hw-boot.elf
+
+arm-none-eabi-objcopy -O binary hw-boot.elf hw-boot.bin
+
+arm-none-eabi-objdump -d hw-boot.elf
+
+The file hw-boot.ld contains:
+ENTRY(_Reset)
+SECTIONS
+{
+ . = 0x0;
+ .text : {
+ hw-startup.o (INTERRUPT_VECTOR)
+ *(.text)
+ }
+ .data : { *(.data) }
+ .bss : { *(.bss COMMON) }
+ . = ALIGN(8);
+ . = . + 0x1000; /* 4kB of stack memory */
+ stack_top = .;
+}
+
+The file hw-entry.c contains:
+int entry(void)
+{
+  return 0;
+}
+
+The file hw-startup.s contains:
+.section INTERRUPT_VECTOR, "x"
+.global _Reset
+_Reset:
+  B Reset_Handler /* Reset */
+  B . /* Undefined */
+  B . /* SWI */
+  B . /* Prefetch Abort */
+  B . /* Data Abort */
+  B . /* reserved */
+  B . /* IRQ */
+  B . /* FIQ */
+
+Reset_Handler:
+  LDR sp, =stack_top
+  BL entry
+  B .
+  
+The file my-directory-list.txt contains:
+

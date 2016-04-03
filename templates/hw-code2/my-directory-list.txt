@@ -1,0 +1,58 @@
+The file compile contains:
+#!/bin/bash
+
+arm-none-eabi-gcc -g -c -mcpu=arm926ej-s hw2-entry.c -o hw2-entry.o
+
+arm-none-eabi-as -g -mcpu=arm926ej-s hw2-startup.s -o hw2-startup.o
+
+arm-none-eabi-ld -T qemuboot.ld hw2-entry.o hw2-startup.o -o qemuboot.elf
+
+arm-none-eabi-objcopy -O binary qemuboot.elf qemuboot.bin
+
+#arm-none-eabi-objdump -d qemuboot.elf
+
+qemu-system-arm -M versatilepb -nographic -kernel qemuboot.bin #-S -s
+
+
+
+The file hw2-entry.c contains:
+volatile unsigned char * const UART0_PTR = (unsigned char *)0x0101f1000;
+
+void print_uart0(const char *string)
+{
+    while(*string != '\0')
+    {
+        *UART0_PTR = *string;
+        string++;
+    }
+}
+
+int entry(void)
+{
+  print_uart0("Hello, world!\n");
+  return 0;
+}
+
+The file hw2-startup.s contains:
+.global _MyApp
+_MyApp:
+ LDR sp, =stack_top
+ BL entry
+ B .
+
+The file my-directory-list.txt contains:
+
+The file qemuboot.ld contains:
+ENTRY(_MyApp)
+SECTIONS
+{
+ . = 0x10000;
+ .startup . : { startup.o(.text) }
+ .text : { *(.text) }
+ .data : { *(.data) }
+ .bss : { *(.bss COMMON) }
+ . = ALIGN(8);
+ . = . + 0x1000; /* 4kB of stack memory */
+ stack_top = .;
+}
+

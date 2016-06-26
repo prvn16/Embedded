@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Embedded.iml" filepath="$PROJECT_DIR$/.idea/Embedded.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../gdata-python-client/.idea/gdata-python-client.iml" filepath="$PROJECT_DIR$/../gdata-python-client/.idea/gdata-python-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../google-api-python-client/.idea/google-api-python-client.iml" filepath="$PROJECT_DIR$/../google-api-python-client/.idea/google-api-python-client.iml" />
     </modules>
   </component>
 </project>
